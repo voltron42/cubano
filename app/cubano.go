@@ -20,7 +20,7 @@ func main() {
   if err != nil {
     panic(err)
   }
-  cubano.Run(conf, cubano.BuildNative(vm))
+  cubano.Run(conf, cubano.BuildNative)
 }
 
 

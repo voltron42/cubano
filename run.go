@@ -5,10 +5,15 @@ import (
   "io/ioutil"
 )
 
-func Run(c Config, s Scope) {
+func Run(c Config, opts... func(vm *otto.Otto) Scope ) {
   vm := otto.New()
   vm.Set("props",c.Properties)
-  s.apply(vm)
+  for _, option := range opts {
+	err := opt(vm)
+    if err != nil {
+      panic(err)
+    }
+  }
   for _, file := range c.Files {
     data, err := ioutil.ReadFile(file)
     if err != nil {

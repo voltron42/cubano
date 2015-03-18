@@ -7,8 +7,8 @@ import (
   "os"
 )
 
-func BuildNative(vm *otto.Otto) Scope {
-return Scope(map[string]function{
+func BuildNative(vm *otto.Otto) error {
+  Scope(map[string]function{
     "json.readFile":function(func(call otto.FunctionCall) otto.Value {
       filename, err := call.Argument(0).ToString()
       if err != nil {
@@ -59,7 +59,8 @@ return Scope(map[string]function{
       }
       return otto.Value{}
     }),
-  })
+  }).apply(vm)
+  return nil
 }
 func makeError(err error, vm *otto.Otto) otto.Value {
   value, _ := vm.Call("new Error", nil, err.Error());
