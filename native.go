@@ -1,24 +1,71 @@
 package cubano
 
-vm.Set("sayHello", func(call otto.FunctionCall) otto.Value { 
-fmt.Printf("Hello, %s.\n", call.Argument(0).String()) 
-return otto.Value{} 
-})
+import (
+  "github.com/robertkrimen/otto"
+  "io/ioutil"
+  "encoding/json"
+  "os"
+)
 
-func applyNative(vm *otto.Otto) {
-  s := &scope{}
-  
-  s.apply("json.readFile", func(call otto.FunctionCall) otto.Value {
-    
+func BuildNative(vm *otto.Otto) Scope {
+return Scope(map[string]function{
+    "json.readFile":function(func(call otto.FunctionCall) otto.Value {
+      filename, err := call.Argument(0).ToString()
+      if err != nil {
+        return makeError(err, vm)
+      }
+      data, err := ioutil.ReadFile(filename)
+      if err != nil {
+        return makeError(err, vm)
+      }
+      var obj interface{}
+      err = json.Unmarshal(data, &obj)
+      if err != nil {
+        return makeError(err, vm)
+      }
+      out, err := otto.ToValue(obj)
+      if err != nil {
+        return makeError(err, vm)
+      }
+      return out
+    }),
+    "file.read":function(func(call otto.FunctionCall) otto.Value {
+      filename, err := call.Argument(0).ToString()
+      if err != nil {
+        return makeError(err, vm)
+      }
+      data, err := ioutil.ReadFile(filename)
+      if err != nil {
+        return makeError(err, vm)
+      }
+      out, err := otto.ToValue(string(data))
+      if err != nil {
+        return makeError(err, vm)
+      }
+      return out
+    }),
+    "file.write":function(func(call otto.FunctionCall) otto.Value {
+      filename, err := call.Argument(0).ToString()
+      if err != nil {
+        return makeError(err, vm)
+      }
+      data, err := call.Argument(1).ToString()
+      if err != nil {
+        return makeError(err, vm)
+      }
+      err = ioutil.WriteFile(filename, []byte(data), os.ModePerm)
+      if err != nil {
+        return makeError(err, vm)
+      }
+      return otto.Value{}
+    }),
   })
-  
-  s.apply("file.read", func(call otto.FunctionCall) otto.Value {
-    
-  })
-  
-  s.apply("file.write", func(call otto.FunctionCall) otto.Value {
-    
-  })
-  
-  s.applyTo(vm)
 }
+func makeError(err error, vm *otto.Otto) otto.Value {
+  value, _ := vm.Call("new Error", nil, err.Error());
+  return value
+}
+
+
+
+
