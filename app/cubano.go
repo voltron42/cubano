@@ -15,18 +15,16 @@ func main() {
   fmt.Println(name)
   path, err := filepath.Abs("./" + name + ".json")
   fmt.Println(path)
-  //data, err := ioutil.ReadFile( "./" + name + ".json" )
   data, err := ioutil.ReadFile(path)
   if err != nil {
-    fmt.Println(err.Error())
-  } else {
+    panic(err)
+  }
   var conf cubano.Config
   err = json.Unmarshal(data, &conf)
   if err != nil {
     panic(err)
   }
-  cubano.Run(conf, cubano.BuildNative)
-}
+  cubano.Run(filepath.Dir(path), conf, cubano.BuildNative)
 }
 
 
