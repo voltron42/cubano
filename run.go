@@ -3,9 +3,11 @@ package cubano
 import (
   "github.com/robertkrimen/otto"
   "io/ioutil"
+  "path/filepath"
+  "fmt"
 )
 
-func Run(c Config, opts... func(vm *otto.Otto) error ) {
+func Run(dir string, c Config, opts... func(vm *otto.Otto) error ) {
   vm := otto.New()
   vm.Set("props",c.Properties)
   for _, option := range opts {
@@ -15,7 +17,9 @@ func Run(c Config, opts... func(vm *otto.Otto) error ) {
     }
   }
   for _, file := range c.Files {
-    data, err := ioutil.ReadFile(file)
+    path := filepath.Join(dir, file);
+    fmt.Println(path)
+    data, err := ioutil.ReadFile(path)
     if err != nil {
       panic(err)
     }
