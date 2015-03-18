@@ -22,8 +22,11 @@ func (s Scope) apply(vm *otto.Otto) {
     for len(path) > 1 {
       step := path[0]
       path = path[1:]
-      temp := map[string]interface{}{}
-      branch[step] = temp
+      temp, ok := branch[step]
+      if !ok {
+        temp = map[string]interface{}{}
+        branch[step] = temp
+      }
       branch = temp
     }
     branch[path[0]] = fn
