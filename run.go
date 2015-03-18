@@ -10,12 +10,14 @@ import (
 func Run(dir string, c Config, opts... func(vm *otto.Otto) error ) {
   vm := otto.New()
   vm.Set("props",c.Properties)
+  s := Scope{}
   for _, option := range opts {
-  err := option(vm)
+  err := option(s, vm)
     if err != nil {
       panic(err)
     }
   }
+  s.apply(vm)
   for _, file := range c.Files {
     path := filepath.Join(dir, file);
     fmt.Println(path)
