@@ -5,11 +5,11 @@ import (
   "io/ioutil"
 )
 
-func Run(c Config, opts... func(vm *otto.Otto) Scope ) {
+func Run(c Config, opts... func(vm *otto.Otto) error ) {
   vm := otto.New()
   vm.Set("props",c.Properties)
   for _, option := range opts {
-	err := opt(vm)
+  err := option(vm)
     if err != nil {
       panic(err)
     }
