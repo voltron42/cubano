@@ -30,14 +30,17 @@ func BuildNative(s Scope, vm *otto.Otto) error {
       return out
     }),
     "file.read":function(func(call otto.FunctionCall) otto.Value {
+	  fmt.Println("reading file")
       filename, err := getFileName(call)
       if err != nil {
         return makeError(err, vm)
       }
+	  fmt.Println("reading data from file")
       data, err := ioutil.ReadFile(filename)
       if err != nil {
         return makeError(err, vm)
       }
+	  fmt.Println("prepping data for return")
       out, err := otto.ToValue(string(data))
       if err != nil {
         return makeError(err, vm)
