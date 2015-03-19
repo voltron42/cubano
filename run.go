@@ -7,7 +7,7 @@ import (
   "fmt"
 )
 
-func Run(dir string, c Config, opts... func(vm *otto.Otto) error ) {
+func Run(dir string, c Config, opts... func(s Scope, vm *otto.Otto) error ) {
   vm := otto.New()
   vm.Set("props",c.Properties)
   s := Scope{}
@@ -25,7 +25,7 @@ func Run(dir string, c Config, opts... func(vm *otto.Otto) error ) {
     if err != nil {
       panic(err)
     }
-    SetDeep("file.cwd",filepath.Dir(path))
+    setDeep("file.cwd",filepath.Dir(path))
     _, err = vm.Run(string(data))
     if err != nil {
       panic(err)

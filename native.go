@@ -9,8 +9,8 @@ import (
 
 func BuildNative(s Scope, vm *otto.Otto) error {
   s.apply(Scope(map[string]function{
-    "json.readFile":function(func(call otto.FunctionCall) otto.Value {
-      filename, err := call.Argument(0).ToString()
+    "file.readJson":function(func(call otto.FunctionCall) otto.Value {
+      filename, err := getFileName(call)
       if err != nil {
         return makeError(err, vm)
       }
@@ -30,7 +30,7 @@ func BuildNative(s Scope, vm *otto.Otto) error {
       return out
     }),
     "file.read":function(func(call otto.FunctionCall) otto.Value {
-      filename, err := call.Argument(0).ToString()
+      filename, err := getFileName(call)
       if err != nil {
         return makeError(err, vm)
       }
@@ -45,7 +45,7 @@ func BuildNative(s Scope, vm *otto.Otto) error {
       return out
     }),
     "file.write":function(func(call otto.FunctionCall) otto.Value {
-      filename, err := call.Argument(0).ToString()
+      filename, err := getFileName(call)
       if err != nil {
         return makeError(err, vm)
       }
@@ -62,11 +62,4 @@ func BuildNative(s Scope, vm *otto.Otto) error {
   }))
   return nil
 }
-func makeError(err error, vm *otto.Otto) otto.Value {
-  value, _ := vm.Call("new Error", nil, err.Error());
-  return value
-}
-
-
-
 
