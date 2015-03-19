@@ -7,17 +7,10 @@ import (
   "path/filepath"
 )
 
-func Run(dir string, c Config, opts ...func(s Scope, vm *otto.Otto) error) error {
+func Run(dir string, c Config) error {
   vm := otto.New()
   vm.Set("props", c.Properties)
-  s := Scope{}
-  for _, option := range opts {
-    err := option(s, vm)
-    if err != nil {
-      return err
-    }
-  }
-  s.applyTo(vm)
+  Native.applyTo(vm)
   for _, file := range c.Files {
     path := filepath.Join(dir, file)
     fmt.Println(path)
@@ -25,10 +18,7 @@ func Run(dir string, c Config, opts ...func(s Scope, vm *otto.Otto) error) error
     if err != nil {
       return err
     }
-    err = setDeep(vm, "file.cwd", filepath.Dir(path))
-    if err != nil {
-      return err
-    }
+	CWD = filepath.Dir(path)
     _, err = vm.Run(string(data))
     if err != nil {
       return err
