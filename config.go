@@ -1,13 +1,13 @@
 package cubano
 
 import (
-"github.com/robertkrimen/otto"
-"strings"
+	"github.com/robertkrimen/otto"
+	"strings"
 )
 
 type Config struct {
-  Properties map[string]interface{} `json:"props"`
-  Files []string `json:"files"`
+	Properties map[string]interface{} `json:"props"`
+	Files      []string               `json:"files"`
 }
 
 type function func(call otto.FunctionCall) otto.Value
@@ -21,24 +21,24 @@ func (s Scope) apply(other Scope) {
 }
 
 func (s Scope) applyTo(vm *otto.Otto) {
-  out := map[string]interface{}{}
-  for key, fn := range s {
-    path := strings.Split(key, ".")
-    branch := out
-    for len(path) > 1 {
-      step := path[0]
-      path = path[1:]
-      temp, ok := branch[step]
-      if !ok {
-        temp = map[string]interface{}{}
-        branch[step] = temp
-      }
-      branch = temp
-    }
-    branch[path[0]] = fn
-  }
-  for key, value := range out {
-    vm.Set(key, value)
-  }
+	out := map[string]interface{}{}
+	for key, fn := range s {
+		path := strings.Split(key, ".")
+		branch := out
+		for len(path) > 1 {
+			step := path[0]
+			path = path[1:]
+			temp, ok1 := branch[step]
+			obj, ok2 := temp.(map[string]interface{})
+			if !ok1 || !ok2 {
+				obj = map[string]interface{}{}
+				branch[step] = obj
+			}
+			branch = obj
+		}
+		branch[path[0]] = fn
+	}
+	for key, value := range out {
+		vm.Set(key, value)
+	}
 }
-
