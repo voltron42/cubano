@@ -60,16 +60,23 @@ func SetDeep(vm *otto.Otto, key string, prop interface{}) err {
     for len(path) > 1 {
       step := path[0]
       path = path[1:]
-      temp, ok := branch[step]
-      if !ok {
-        temp = map[string]interface{}{}
-        branch[step] = temp
+      value, err = obj.Get(step)
+      if err != nil {
+        temp := otto.Object{}
+        stub, _ := temp.Value().Export()
+        err = obj.Set(step, stub)
+        if err != nil {
+          return err
+        }
+        obj = temp
+      } else if !value.IsObject() {
+        return stdErr
+      } else {
+        obj = value.Object()
       }
-      branch = temp
 	}
-    branch := out
     obj[path[0]] = fn
-
+  return nil
 }
 
 

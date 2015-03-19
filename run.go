@@ -25,6 +25,7 @@ func Run(dir string, c Config, opts... func(vm *otto.Otto) error ) {
     if err != nil {
       panic(err)
     }
+    SetDeep("file.cwd",filepath.Dir(path))
     _, err = vm.Run(string(data))
     if err != nil {
       panic(err)
