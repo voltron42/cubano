@@ -5,6 +5,7 @@ import (
   "io/ioutil"
   "encoding/json"
   "os"
+  "fmt"
 )
 var CWD = ""
 var Native = Scope(map[string]interface{}{
@@ -63,7 +64,8 @@ var Native = Scope(map[string]interface{}{
 		  return otto.Value{}
 		},
 		"cwd":func(call otto.FunctionCall) otto.Value {
-			return otto.ToValue(CWD)
+  		value, _ := otto.ToValue(CWD)
+			return value
 		},
 	},
 })

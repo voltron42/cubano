@@ -5,6 +5,7 @@ import (
   "github.com/robertkrimen/otto"
   "path/filepath"
   "strings"
+  "fmt"
 )
 
 func setDeep(vm *otto.Otto, key string, prop interface{}) error {
@@ -45,31 +46,13 @@ func setDeep(vm *otto.Otto, key string, prop interface{}) error {
 }
 
 func getFileName(call otto.FunctionCall) (string, error) {
-  fmt.Println("getting filename")
-  fmt.Println("getting scope object")
-  this := call.This
-  if !this.IsObject() {
-    return "", errors.New("improper scope on file method")
-  }
-  fmt.Println("converting scope object")
-  thisObj := this.Object()
-  fmt.Println("getting cwd")
-  value, err := thisObj.Get("cwd")
-  if err != nil {
-    return "", err
-  }
-  fmt.Println("converting cwd")
-  cwd, err := value.ToString()
-  if err != nil {
-    return "", err
-  }
   fmt.Println("getting filename from argument")
   filename, err := call.Argument(0).ToString()
   if err != nil {
     return "", err
   }
   fmt.Println("joining cwd and filename")
-  return filepath.Join(cwd, filename), nil
+  return filepath.Join(CWD, filename), nil
 }
 
 func makeError(err error, vm *otto.Otto) otto.Value {

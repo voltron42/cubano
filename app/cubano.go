@@ -29,7 +29,7 @@ func main() {
   if err != nil {
     panic(err)
   }
-  err = cubano.Run(filepath.Dir(path), conf, cubano.BuildNative)
+  err = cubano.Run(filepath.Dir(path), conf)
   if err != nil {
     panic(err)
   }
