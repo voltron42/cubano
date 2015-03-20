@@ -9,15 +9,20 @@ import (
 )
 
 func main() {
+/*
 defer func() {
     if r := recover(); r != nil {
       fmt.Println(r)
     }
   }()
+  */
   name := ""
   fmt.Println("blueprint: ")
   fmt.Scanf("%v", &name)
   path, err := filepath.Abs(name)
+  if err != nil {
+    panic(err)
+  }
   data, err := ioutil.ReadFile(path)
   if err != nil {
     panic(err)
@@ -27,7 +32,7 @@ defer func() {
   if err != nil {
     panic(err)
   }
-  err = standalone.Run(filepath.Join(filepath.Dir(path), ".."), conf
+  err = standalone.Run(filepath.Join(filepath.Dir(path), ".."), conf)
   if err != nil {
     panic(err)
   }
