@@ -13,7 +13,7 @@ Scripts []string `json:"scripts"`
 }
 type BodyConfig struct {
 Attributes map[string]string `json:"attrs"`
-Template string `json:"tpl"
+Template string `json:"tpl"`
 Data string `json:"data"`
 }
 

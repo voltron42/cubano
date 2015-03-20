@@ -6,9 +6,10 @@ import (
 	"io"
 	"io/ioutil"
 	"path/filepath"
+	"github.com/robertkrimen/otto"
 )
 
-func Run(srcpath string, conf Config) error {
+func Run(dir string, conf Config) error {
 	out, err := Create(dir, conf.Destination)
 	if err != nil {
 		return err
@@ -19,12 +20,12 @@ func Run(srcpath string, conf Config) error {
 	out.Println("<title>"+conf.Head.Title+"</title>")
 	out.Println("<style>")
 	for _, style := range conf.Head.Styles {
-		out.Stream(srcpath, style)
+		out.Stream(dir, style)
 	}
 	out.Println("</style>")
 	out.Println("<script>")
 	for _, script := range conf.Head.Scripts {
-		out.Stream(srcpath, script)
+		out.Stream(dir, script)
 	}
 	out.Println("</script>")
 	out.Println("</head>")
@@ -37,17 +38,18 @@ func Run(srcpath string, conf Config) error {
 		out.Print("\"")
 	}
 	out.Println(">")
-	tpl, err := readFrom(srcpath, conf.Body.Template)
+	tpl, err := readFrom(dir, conf.Body.Template)
 	if err != nil {
 		return err
 	}
-	data, err := readFrom(srcpath, conf.Body.Data)
+	data, err := readFrom(dir, conf.Body.Data)
 	if err != nil {
 		return err
 	}
 	out.Println(buildBody(execpath, tpl, data))
 	out.Println("</body>")
 	out.Println("</html>")
+	return nil
 }
 
 func readFrom(path, filename string) (string, error) {
@@ -75,7 +77,7 @@ func buildBody(tpl, data string) (string, error) {
 	}
 	dir, err := os.Getwd()
 	if err == nil {
-		err = cubano.Run(relpath, conf)
+		err = cubano.Run(dir, conf)
 	}
 	return retVal, err
 }
@@ -84,8 +86,9 @@ type OutFile struct {
 	file *File
 }
 
-func Create(fileName string) (*OutFile, error) {
-	outfile, err := os.Create(fileName)
+func Create(path, filename string) (*OutFile, error) {
+	
+	outfile, err := os.Create(filepath.Join(path, filename))
 	return &OutFile{outfile}, err
 }
 
@@ -95,7 +98,7 @@ func (o *OutFile) Print(line string) error {
 }
 
 func (o *OutFile) Println(line string) error {
-	return o.Print(line + "\n"")
+	return o.Print(line + "\n")
 }
 
 func (o *OutFile) Stream(path, fileName string) error {
