@@ -17,19 +17,25 @@ func Run(dir string, conf Config) error {
 	out.Println("<!DOCTYPE html>")
 	out.Println("<html>")
 	out.Println("<head>")
-	out.Println("<title>"+conf.Head.Title+"</title>")
-	out.Println("<style>")
-	for _, style := range conf.Head.Styles {
-		out.Stream(dir, style)
+	if len(conf.Head.Title) > 0 {
+		out.Println("<title>"+conf.Head.Title+"</title>")
 	}
-	out.Println("</style>")
-	out.Println("<script>")
-	for _, script := range conf.Head.Scripts {
-		out.Stream(dir, script)
+	if len(conf.Head.Styles) > 0 {
+		out.Println("<style>")
+		for _, style := range conf.Head.Styles {
+			out.Stream(dir, style)
+		}
+		out.Println("</style>")
 	}
-	out.Println("</script>")
+	if len(conf.Head.Scripts) > 0 {
+		out.Println("<script>")
+		for _, script := range conf.Head.Scripts {
+			out.Stream(dir, script)
+		}
+		out.Println("</script>")
+	}
 	out.Println("</head>")
-	out.Println("<body")
+	out.Print("<body")
 	for name, attr := range conf.Body.Attributes {
 		out.Print(" ")
 		out.Print(name)
@@ -64,7 +70,7 @@ func readFrom(path, filename string) (string, error) {
 func buildBody(tpl, data string) (string, error) {
 	conf := cubano.Config{
 		Files:[]string{
-			
+			"../../blender/render/Mint/mint.js",
 			"./standalone.js",
 		},
 		Properties:map[string]interface{}{

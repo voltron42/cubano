@@ -1,0 +1,19 @@
+{
+	"dest":"./full.html",
+	"head":{
+		"title":"The Cheese"
+		"styles":[
+			"./style.css"
+		],
+		"scripts":[
+			"./scripts.js"
+		]
+	},
+	"body":{
+		"attrs":{
+			"onload":"init()"
+		},
+		"tpl":"./tpl.html",
+		"data":"./data.json"
+	}
+}

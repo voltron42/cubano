@@ -27,7 +27,7 @@ defer func() {
   if err != nil {
     panic(err)
   }
-  err = standalone.Run(filepath.Dir(path), conf)
+  err = standalone.Run(filepath.Join(filepath.Dir(path), ".."), conf
   if err != nil {
     panic(err)
   }
