@@ -10,8 +10,8 @@ import (
 	"github.com/robertkrimen/otto"
 )
 
-func Run(dir string, conf Config) error {
-	out, err := Create(dir, conf.Destination)
+func Run(srcpath, execpath string, conf Config) error {
+	out, err := Create(srcpath, conf.Destination)
 	if err != nil {
 		return err
 	}
@@ -25,14 +25,14 @@ func Run(dir string, conf Config) error {
 	if len(conf.Head.Styles) > 0 {
 		out.Println("<style>")
 		for _, style := range conf.Head.Styles {
-			out.Stream(dir, style)
+			out.Stream(srcpath, style)
 		}
 		out.Println("</style>")
 	}
 	if len(conf.Head.Scripts) > 0 {
 		out.Println("<script>")
 		for _, script := range conf.Head.Scripts {
-			out.Stream(dir, script)
+			out.Stream(srcpath, script)
 		}
 		out.Println("</script>")
 	}
@@ -46,15 +46,15 @@ func Run(dir string, conf Config) error {
 		out.Print("\"")
 	}
 	out.Println(">")
-	tpl, err := readFrom(dir, conf.Body.Template)
+	tpl, err := readFrom(srcpath, conf.Body.Template)
 	if err != nil {
 		return err
 	}
-	data, err := readFrom(dir, conf.Body.Data)
+	data, err := readFrom(srcpath, conf.Body.Data)
 	if err != nil {
 		return err
 	}
-	body, err := buildBody(tpl, data)
+	body, err := buildBody(execpath, tpl, data)
 	if err != nil {
 		return err
 	}
@@ -69,7 +69,7 @@ func readFrom(path, filename string) (string, error) {
 	return string(out), err
 }
 
-func buildBody(tpl, data string) (string, error) {
+func buildBody(relpath, tpl, data string) (string, error) {
 	conf := cubano.Config{
 		Files:[]string{
 			"../../blender/render/Mint/mint.js",
@@ -89,7 +89,7 @@ func buildBody(tpl, data string) (string, error) {
 	}
 	dir, err := os.Getwd()
 	if err == nil {
-		err = cubano.Run(dir, conf)
+		err = cubano.Run(filepath.Join(dir, relpath), conf
 	}
 	return retVal, err
 }
