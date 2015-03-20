@@ -83,7 +83,7 @@ func buildBody(tpl, data string) (string, error) {
 }
 
 type OutFile struct {
-	file *File
+	file *os.File
 }
 
 func Create(path, filename string) (*OutFile, error) {
