@@ -4,6 +4,7 @@ import (
 	"../"
 	"os"
 	"io"
+	"fmt"
 	"io/ioutil"
 	"path/filepath"
 	"github.com/robertkrimen/otto"
@@ -14,6 +15,7 @@ func Run(dir string, conf Config) error {
 	if err != nil {
 		return err
 	}
+	fmt.Println("writing to file")
 	out.Println("<!DOCTYPE html>")
 	out.Println("<html>")
 	out.Println("<head>")
@@ -97,8 +99,10 @@ type OutFile struct {
 }
 
 func Create(path, filename string) (*OutFile, error) {
-	
-	outfile, err := os.Create(filepath.Join(path, filename))
+	fmt.Println("creating output file")
+	outpath := filepath.Join(path, filename)
+	fmt.Println(outpath)
+	outfile, err := os.Create(outpath)
 	return &OutFile{outfile}, err
 }
 
@@ -112,7 +116,10 @@ func (o *OutFile) Println(line string) error {
 }
 
 func (o *OutFile) Stream(path, fileName string) error {
-	src, err := os.Open(filepath.Join(path,fileName))
+	fmt.Println("streaming from:")
+	srcFile := filepath.Join(path,fileName)
+	fmt.Println(srcFile)
+	src, err := os.Open(srcFile)
 	if err != nil {
 		return err
 	}

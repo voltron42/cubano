@@ -12,6 +12,7 @@ func Run(dir string, c Config) error {
   vm.Set("props", c.Properties)
   Native.applyTo(vm)
   for _, file := range c.Files {
+	fmt.Println("reading js file")
     path := filepath.Join(dir, file)
     fmt.Println(path)
     data, err := ioutil.ReadFile(path)
