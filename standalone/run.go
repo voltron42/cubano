@@ -89,7 +89,7 @@ func buildBody(relpath, tpl, data string) (string, error) {
 	}
 	dir, err := os.Getwd()
 	if err == nil {
-		err = cubano.Run(filepath.Join(dir, relpath), conf
+		err = cubano.Run(filepath.Join(dir, relpath), conf)
 	}
 	return retVal, err
 }

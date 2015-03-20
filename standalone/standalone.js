@@ -1,1 +1,1 @@
-callback(Mint.compile(job.tpl).apply(job.data))
+callback(Mint.compile(props.job.tpl).apply(JSON.parse(props.job.data)))
