@@ -46,7 +46,11 @@ func Run(dir string, conf Config) error {
 	if err != nil {
 		return err
 	}
-	out.Println(buildBody(execpath, tpl, data))
+	body, err := buildBody(tpl, data)
+	if err != nil {
+		return err
+	}
+	out.Println(body)
 	out.Println("</body>")
 	out.Println("</html>")
 	return nil
@@ -72,7 +76,7 @@ func buildBody(tpl, data string) (string, error) {
 	}
 	retVal := ""
 	cubano.Native["callback"] = func(call otto.FunctionCall) otto.Value {
-		retVal = call.Attribute(0).String()
+		retVal = call.Argument(0).String()
 		return otto.Value{}
 	}
 	dir, err := os.Getwd()
