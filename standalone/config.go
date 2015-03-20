@@ -1,17 +1,20 @@
 package standalone
 
 type Config struct {
-Destination string
-Title string
-Styles []string
-Scripts []string
-Body BodyConfig
+Destination string `json:"dest"`
+Head HeadConfig `json:"head"`
+Body BodyConfig `json:"body"`
 }
 
+type HeadConfig struct {
+Title string `json:"title"`
+Styles []string `json:"styles"`
+Scripts []string `json:"scripts"`
+}
 type BodyConfig struct {
-BodyTemplate string
-BodyData string
-BodyAttributes map[string]string
+Attributes map[string]string `json:"attrs"`
+Template string `json:"tpl"
+Data string `json:"data"`
 }
 
 

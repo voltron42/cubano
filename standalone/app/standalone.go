@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-  defer func() {
+defer func() {
     if r := recover(); r != nil {
       fmt.Println(r)
     }
@@ -22,12 +22,12 @@ func main() {
   if err != nil {
     panic(err)
   }
-  var conf cubano.Config
+  var conf standalone.Config
   err = json.Unmarshal(data, &conf)
   if err != nil {
     panic(err)
   }
-  err = cubano.Run(filepath.Dir(path), conf)
+  err = standalone.Run(filepath.Dir(path), conf)
   if err != nil {
     panic(err)
   }
