@@ -25,14 +25,21 @@ func Run(srcpath, execpath string, conf Config) error {
 	if len(conf.Head.Styles) > 0 {
 		out.Println("<style>")
 		for _, style := range conf.Head.Styles {
-			out.Stream(srcpath, style)
+			err := out.Stream(srcpath, style)
+			if err != nil {
+				return err
+			}
+			out.Println("\n\n");
 		}
 		out.Println("</style>")
 	}
 	if len(conf.Head.Scripts) > 0 {
 		out.Println("<script>")
 		for _, script := range conf.Head.Scripts {
-			out.Stream(srcpath, script)
+			err := out.Stream(srcpath, script)
+			if err != nil {
+				return err
+			}
 		}
 		out.Println("</script>")
 	}
@@ -65,7 +72,8 @@ func Run(srcpath, execpath string, conf Config) error {
 }
 
 func readFrom(path, filename string) (string, error) {
-	out, err := ioutil.ReadFile(filepath.Join(path, filename))
+	uri := filepath.Join(path, filename);
+	out, err := ioutil.ReadFile(uri)
 	return string(out), err
 }
 
